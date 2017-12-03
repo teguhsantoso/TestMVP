@@ -1,11 +1,13 @@
 package de.example.tsa.testmvp.db;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import de.example.tsa.testmvp.entities.Product;
+import de.example.tsa.testmvp.services.Constants;
 import rx.Single;
 import rx.SingleSubscriber;
 import rx.Subscription;
@@ -42,6 +44,32 @@ public class RoomDatabaseImpl implements RoomInteractor {
                     @Override
                     public void onError(Throwable error) {
                         // Do nothing.
+                    }
+                });
+    }
+
+    private void updateProductSingle(Product mProduct) {
+        Single<Integer> initProductsSingle = Single.fromCallable(new Callable<Integer>() {
+
+            @Override
+            public Integer call() throws Exception {
+                return updateProduct(mProduct);
+            }
+        });
+
+        mProductsSubscription = initProductsSingle
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleSubscriber<Integer>() {
+                    @Override
+                    public void onSuccess(Integer value) {
+                        Log.d(Constants.LOGGER, ">>> Affected row: " + value);
+                        roomInteractionListener.affectedRow(value);
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+                        // DO nothing.
                     }
                 });
     }
@@ -89,6 +117,10 @@ public class RoomDatabaseImpl implements RoomInteractor {
         return appDatabase.productDao().getAll();
     }
 
+    private int updateProduct(Product product) {
+        return appDatabase.productDao().update(product);
+    }
+
     private List<Product> findAllByName(String name) {
         if(name.trim().isEmpty()){
             return appDatabase.productDao().getAll();
@@ -112,8 +144,9 @@ public class RoomDatabaseImpl implements RoomInteractor {
 
     @Override
     public void storeData(Context cTxt, Product product, OnRoomInteractionListener listener) {
-        // TODO
-        // Add implementation here.
+        this.appDatabase = AppDatabase.getAppDatabase(cTxt);
+        this.roomInteractionListener = listener;
+        updateProductSingle(product);
     }
 
     @Override

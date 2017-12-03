@@ -6,4 +6,5 @@ package de.example.tsa.testmvp.presenters;
 
 public interface DetailProductPresenterCallback {
     void printTimestamp(String response);
+    void showToast(String message);
 }

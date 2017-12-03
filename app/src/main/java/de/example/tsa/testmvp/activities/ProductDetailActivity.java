@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import de.example.tsa.testmvp.R;
 import de.example.tsa.testmvp.entities.Product;
@@ -87,12 +88,17 @@ public class ProductDetailActivity extends AppCompatActivity implements DetailPr
         this.textViewTimestamp.setText("Timestamp: " + response);
     }
 
-    public void cancelAction(View view){
+    @Override
+    public void showToast(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
 
+    public void cancelAction(View view){
+        finish();
     }
 
     public void confirmAction(View view){
-
+        this.presenter.updateProductData(this.selectedProduct);
     }
 
 }
