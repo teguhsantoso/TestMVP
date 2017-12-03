@@ -12,6 +12,7 @@ public interface MainPresenter {
     void setContext(Activity activity);
     void onDestroy();
     void initDB();
+    void findProductsAll();
     void findProductsByName(String name);
     void deleteProduct(Product product);
 }

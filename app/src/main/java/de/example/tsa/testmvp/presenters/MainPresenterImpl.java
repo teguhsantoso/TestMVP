@@ -41,6 +41,12 @@ public class MainPresenterImpl implements MainPresenter, RoomInteractor.OnRoomIn
     }
 
     @Override
+    public void findProductsAll() {
+        this.presenterCallback.showProgressBar();
+        this.roomInteractor.findProductsByName(cTxt, "", this);
+    }
+
+    @Override
     public void findProductsByName(String name) {
         this.presenterCallback.showProgressBar();
         this.roomInteractor.findProductsByName(cTxt, name, this);

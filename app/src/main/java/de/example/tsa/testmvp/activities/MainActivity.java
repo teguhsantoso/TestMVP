@@ -1,11 +1,13 @@
 package de.example.tsa.testmvp.activities;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -30,11 +32,13 @@ public class MainActivity extends AppCompatActivity implements MainPresenterCall
     private ProductsItemAdapter     mAdapter;
     private RecyclerView            mRecyclerView;
     private MainPresenter           presenter;
+    private Context                 cTxt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        cTxt = this;
         this.textViewSumOfProducts = findViewById(R.id.textViewSumOfProducts);
         this.textViewLoadingData = findViewById(R.id.textViewLoadingData);
         this.editTextSearchName = findViewById(R.id.editTextSearchName);
@@ -54,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenterCall
     @Override
     protected void onResume() {
         super.onResume();
-        this.presenter.findProductsByName("");
+        this.presenter.findProductsAll();
     }
 
     @Override
@@ -131,7 +135,26 @@ public class MainActivity extends AppCompatActivity implements MainPresenterCall
 
     @Override
     public void onDeleteProduct(Product product) {
-        Log.d(Constants.LOGGER, ">>> Delete product: " + product.getItemId() + " - " + product.getName());
-        this.presenter.deleteProduct(product);
+        openDialogDeleteItem(product);
+    }
+
+    private void openDialogDeleteItem(Product product) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(cTxt);
+        alertDialogBuilder.setTitle("App system dialog");
+        alertDialogBuilder
+                .setMessage("Do you really want to delete this item?")
+                .setCancelable(false)
+                .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        presenter.deleteProduct(product);
+                    }
+                })
+                .setNegativeButton("No",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 }
