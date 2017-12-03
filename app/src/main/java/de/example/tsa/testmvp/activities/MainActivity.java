@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenterCall
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         this.presenter = new MainPresenterImpl(this);
         this.presenter.setContext(this);
-        this.presenter.initDB();
+        //this.presenter.initDB();
     }
 
     @Override
@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenterCall
     @Override
     protected void onResume() {
         super.onResume();
+        this.presenter.initDB();
     }
 
     @Override

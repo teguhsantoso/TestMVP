@@ -93,11 +93,18 @@ public class ProductDetailActivity extends AppCompatActivity implements DetailPr
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void goBack() {
+        finish();
+    }
+
     public void cancelAction(View view){
         finish();
     }
 
     public void confirmAction(View view){
+        this.selectedProduct.setSumOfOrders(Integer.valueOf(this.editTextSumOders.getText().toString().trim()));
+        this.selectedProduct.setDescription(this.editTextDescription.getText().toString());
         this.presenter.updateProductData(this.selectedProduct);
     }
 
