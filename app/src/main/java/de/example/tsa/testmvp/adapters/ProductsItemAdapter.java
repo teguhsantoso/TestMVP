@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class ProductsItemAdapter extends RecyclerView.Adapter<ProductsItemAdapte
 
     public interface OnAdapterInteractionListener {
         void onOrderItemClicked(Product product);
+        void onDeleteProduct(Product product);
     }
 
     private static Context                          cTxt;
@@ -50,12 +52,21 @@ public class ProductsItemAdapter extends RecyclerView.Adapter<ProductsItemAdapte
         protected TextView textViewProductName;
         protected TextView textViewSupplierName;
         protected TextView textViewSumOrders;
+        protected ImageButton buttonDeleteItem;
 
         public CustomViewHolder(View view) {
             super(view);
             this.textViewProductName = view.findViewById(R.id.textViewProductName);
             this.textViewSupplierName = view.findViewById(R.id.textViewSupplierName);
             this.textViewSumOrders = view.findViewById(R.id.textViewSumOrders);
+            this.buttonDeleteItem = view.findViewById(R.id.imageButtonDeleteItem);
+            this.buttonDeleteItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mListener = (OnAdapterInteractionListener) cTxt;
+                    mListener.onDeleteProduct(data.get(getAdapterPosition()));
+                }
+            });
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

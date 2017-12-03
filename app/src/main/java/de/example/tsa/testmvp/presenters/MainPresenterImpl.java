@@ -7,6 +7,7 @@ import java.util.List;
 
 import de.example.tsa.testmvp.db.RoomDatabaseImpl;
 import de.example.tsa.testmvp.db.RoomInteractor;
+import de.example.tsa.testmvp.entities.Product;
 
 /**
  * Created by Teguh Santoso on 25.11.2017.
@@ -46,6 +47,11 @@ public class MainPresenterImpl implements MainPresenter, RoomInteractor.OnRoomIn
     }
 
     @Override
+    public void deleteProduct(Product product) {
+        this.roomInteractor.deleteProduct(cTxt, product, this);
+    }
+
+    @Override
     public void onResponse(List products) {
         this.presenterCallback.hideProgressBar();
         this.presenterCallback.showMessage("Found products size #" + products.size());
@@ -54,8 +60,8 @@ public class MainPresenterImpl implements MainPresenter, RoomInteractor.OnRoomIn
 
     @Override
     public void affectedRow(int rows) {
-        // TODO
-        // Do nothing.
+        this.presenterCallback.showToast("Delete success, row affected: " + rows);
+        this.presenterCallback.refreshProductsData();
     }
 
 }

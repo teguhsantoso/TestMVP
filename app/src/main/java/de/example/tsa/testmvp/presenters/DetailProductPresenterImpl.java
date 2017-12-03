@@ -63,7 +63,7 @@ public class DetailProductPresenterImpl implements DetailProductPresenter, RoomI
 
     @Override
     public void onResponse(List products) {
-
+        // Do nothing.
     }
 
     @Override

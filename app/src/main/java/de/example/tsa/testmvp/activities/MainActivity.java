@@ -5,10 +5,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenterCall
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         this.presenter = new MainPresenterImpl(this);
         this.presenter.setContext(this);
-        //this.presenter.initDB();
+        this.presenter.initDB();
     }
 
     @Override
@@ -52,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenterCall
     @Override
     protected void onResume() {
         super.onResume();
-        this.presenter.initDB();
+        this.presenter.findProductsByName("");
     }
 
     @Override
@@ -105,6 +107,16 @@ public class MainActivity extends AppCompatActivity implements MainPresenterCall
         this.mAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void showToast(String s) {
+        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void refreshProductsData() {
+        this.presenter.findProductsByName("");
+    }
+
     public void searchProducts(View view){
         this.presenter.findProductsByName(editTextSearchName.getText().toString().trim());
     }
@@ -115,5 +127,11 @@ public class MainActivity extends AppCompatActivity implements MainPresenterCall
         intent.putExtra(Constants.INTENT_SELECTED_PRODUCT, product);
         startActivity(intent);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+    }
+
+    @Override
+    public void onDeleteProduct(Product product) {
+        Log.d(Constants.LOGGER, ">>> Delete product: " + product.getItemId() + " - " + product.getName());
+        this.presenter.deleteProduct(product);
     }
 }

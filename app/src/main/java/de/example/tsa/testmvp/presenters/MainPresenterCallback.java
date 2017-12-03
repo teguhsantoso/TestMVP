@@ -16,4 +16,7 @@ public interface MainPresenterCallback {
 
     void fillDataProducts(List products);
 
+    void showToast(String s);
+
+    void refreshProductsData();
 }

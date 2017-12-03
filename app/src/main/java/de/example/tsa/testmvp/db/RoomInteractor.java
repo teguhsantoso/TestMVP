@@ -23,6 +23,8 @@ public interface RoomInteractor {
 
     void storeData(Context cTxt, Product product, OnRoomInteractionListener listener);
 
+    void deleteProduct(Context cTxt, Product product, OnRoomInteractionListener listener);
+
     void unsubscribe();
 
 }

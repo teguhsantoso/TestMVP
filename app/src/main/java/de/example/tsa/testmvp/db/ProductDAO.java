@@ -29,7 +29,7 @@ public interface ProductDAO {
     int update(Product product);
 
     @Delete
-    void delete(Product product);
+    int delete(Product product);
 
     @Delete
     void deleteAll(Product... products);
