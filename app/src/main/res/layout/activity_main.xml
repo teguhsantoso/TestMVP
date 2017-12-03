@@ -60,8 +60,9 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/textViewTitleProducts"
         android:ems="10"
+        android:background="@drawable/rounded_edit_text"
         android:hint="Input product name"
-        android:inputType="textPersonName" />
+        android:inputType="text" />
 
     <Button
         android:id="@+id/buttonSearch"
