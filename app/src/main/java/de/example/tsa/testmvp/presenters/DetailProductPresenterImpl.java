@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 import java.util.List;
 
@@ -51,9 +50,6 @@ public class DetailProductPresenterImpl implements DetailProductPresenter, RoomI
 
     @Override
     public void updateProductData(Product selectedProduct) {
-        Log.d(Constants.LOGGER, ">>> Update product for Id: " + selectedProduct.getItemId());
-        Log.d(Constants.LOGGER, ">>> New sum order: " + selectedProduct.getSumOfOrders());
-        Log.d(Constants.LOGGER, ">>> New item description: " + selectedProduct.getDescription());
         this.roomInteractor.storeData(cTxt, selectedProduct, this);
     }
 

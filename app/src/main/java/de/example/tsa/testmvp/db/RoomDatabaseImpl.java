@@ -1,13 +1,11 @@
 package de.example.tsa.testmvp.db;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import de.example.tsa.testmvp.entities.Product;
-import de.example.tsa.testmvp.services.Constants;
 import rx.Single;
 import rx.SingleSubscriber;
 import rx.Subscription;
@@ -63,7 +61,6 @@ public class RoomDatabaseImpl implements RoomInteractor {
                 .subscribe(new SingleSubscriber<Integer>() {
                     @Override
                     public void onSuccess(Integer value) {
-                        Log.d(Constants.LOGGER, ">>> Affected row: " + value);
                         roomInteractionListener.affectedRow(value);
                     }
 
