@@ -18,16 +18,16 @@ import de.example.tsa.testmvp.entities.Product;
 import de.example.tsa.testmvp.presenters.MainPresenter;
 import de.example.tsa.testmvp.presenters.MainPresenterCallback;
 import de.example.tsa.testmvp.presenters.MainPresenterImpl;
+import de.example.tsa.testmvp.services.Constants;
 
 public class MainActivity extends AppCompatActivity implements MainPresenterCallback, ProductsItemAdapter.OnAdapterInteractionListener {
-    private static final String     INTENT_SELECTED_PRODUCT = "SELECTED PRODUCT";
-    private MainPresenter           presenter;
     private TextView                textViewSumOfProducts;
     private TextView                textViewLoadingData;
     private EditText                editTextSearchName;
     private ProgressBar             progressBar;
     private ProductsItemAdapter     mAdapter;
     private RecyclerView            mRecyclerView;
+    private MainPresenter           presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenterCall
     @Override
     public void onOrderItemClicked(Product product) {
         Intent intent = new Intent(this, ProductDetailActivity.class);
-        intent.putExtra(INTENT_SELECTED_PRODUCT, product);
+        intent.putExtra(Constants.INTENT_SELECTED_PRODUCT, product);
         startActivity(intent);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
     }

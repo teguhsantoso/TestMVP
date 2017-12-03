@@ -10,7 +10,6 @@ import java.util.Date;
  * Created by teguh.santoso on 07.12.2015.
  */
 public class AppUtility {
-    private static final String CONSTANT_PATTERN_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     /**
      * Initialize the self singleton class object.
@@ -25,14 +24,14 @@ public class AppUtility {
     }
 
     public Timestamp getTimestamp(String sDate) throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(CONSTANT_PATTERN_DATE_FORMAT);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(Constants.GERMAN_PATTERN_DATE_FORMAT);
         Date parsedDate = dateFormat.parse(sDate);
         return new java.sql.Timestamp(parsedDate.getTime());
     }
 
     public String getCurrentTime(long time) {
         Date date = new Date(time);
-        Format format = new SimpleDateFormat(CONSTANT_PATTERN_DATE_FORMAT);
+        Format format = new SimpleDateFormat(Constants.GERMAN_PATTERN_DATE_FORMAT);
         return format.format(date).toString();
     }
 

@@ -12,8 +12,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class TelegramService extends Service {
-    public static final String          INTENT_ACTION_READ = "de.tsa.mvp.READ";
-    public static final String          INTENT_EXTRA_RESPONSE = "intent-response";
     private Context                     cTxt;
     private ScheduledExecutorService    scheduler;
 
@@ -31,7 +29,7 @@ public class TelegramService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(intent.getAction().equals(INTENT_ACTION_READ)){
+        if(intent.getAction().equals(Constants.INTENT_ACTION_READ)){
             startSchedulerReadDataSocket();
         }
         return START_STICKY;
@@ -54,8 +52,8 @@ public class TelegramService extends Service {
 
     private void generateTimestamp() {
         String strTimestamp = AppUtility.getInstance().getCurrentTime(new Date().getTime());
-        Intent intent = new Intent(INTENT_ACTION_READ);
-        intent.putExtra(INTENT_EXTRA_RESPONSE, strTimestamp);
+        Intent intent = new Intent(Constants.INTENT_ACTION_READ);
+        intent.putExtra(Constants.INTENT_EXTRA_RESPONSE, strTimestamp);
         LocalBroadcastManager.getInstance(cTxt).sendBroadcast(intent);
     }
 

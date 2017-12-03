@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 
+import de.example.tsa.testmvp.services.Constants;
 import de.example.tsa.testmvp.services.TelegramService;
 
 /**
@@ -29,9 +30,9 @@ public class DetailProductPresenterImpl implements DetailProductPresenter {
     @Override
     public void startTelegramService() {
         Intent i = new Intent(cTxt, TelegramService.class);
-        i.setAction(TelegramService.INTENT_ACTION_READ);
+        i.setAction(Constants.INTENT_ACTION_READ);
         cTxt.startService(i);
-        LocalBroadcastManager.getInstance(cTxt).registerReceiver(mMessageReceiverReading, new IntentFilter(TelegramService.INTENT_ACTION_READ));
+        LocalBroadcastManager.getInstance(cTxt).registerReceiver(mMessageReceiverReading, new IntentFilter(Constants.INTENT_ACTION_READ));
     }
 
     @Override
@@ -43,7 +44,7 @@ public class DetailProductPresenterImpl implements DetailProductPresenter {
     private BroadcastReceiver mMessageReceiverReading = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, Intent intent) {
-            String response = intent.getStringExtra(TelegramService.INTENT_EXTRA_RESPONSE);
+            String response = intent.getStringExtra(Constants.INTENT_EXTRA_RESPONSE);
             presenterCallback.printTimestamp(response);
         }
     };

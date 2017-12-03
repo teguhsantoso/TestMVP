@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="10dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp"
     tools:context="de.example.tsa.testmvp.activities.ProductDetailActivity">
 
     <TextView
@@ -20,10 +23,11 @@
         android:id="@+id/textViewProductId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/textViewTitle"
-        android:layout_marginTop="28dp"
-        android:text="Product-Id:" />
+        android:layout_marginTop="15dp"
+        android:text="PRODUCT-ID" />
 
     <TextView
         android:id="@+id/textViewTimestamp"
@@ -35,5 +39,86 @@
         android:textSize="16sp"
         android:textStyle="italic"
         android:text="Generate timestamp..." />
+
+    <Button
+        android:id="@+id/buttonCancel"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editTextDescription"
+        android:layout_marginTop="31dp"
+        android:layout_toStartOf="@+id/buttonConfirm"
+        android:onClick="cancelAction"
+        android:text="Cancel" />
+
+    <Button
+        android:id="@+id/buttonConfirm"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/buttonCancel"
+        android:layout_alignBottom="@+id/buttonCancel"
+        android:layout_alignEnd="@+id/editTextDescription"
+        android:onClick="confirmAction"
+        android:text="OK" />
+
+    <TextView
+        android:id="@+id/textViewSumOrder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textViewBarcodeId"
+        android:layout_marginTop="15dp"
+        android:text="Sum order:" />
+
+    <EditText
+        android:id="@+id/editTextSumOrder"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/textViewSumOrder"
+        android:layout_marginStart="18dp"
+        android:layout_toEndOf="@+id/textViewSumOrder"
+        android:background="@drawable/rounded_edit_text"
+        android:gravity="center"
+        android:imeOptions="actionDone"
+        android:inputType="number"
+        android:maxLength="4"
+        android:maxLines="1"
+        android:text="0"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/textViewDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/editTextSumOrder"
+        android:layout_marginTop="15dp"
+        android:textSize="16sp"
+        android:text="Description" />
+
+    <EditText
+        android:id="@+id/editTextDescription"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textViewDescription"
+        android:layout_alignBottom="@+id/textViewDescription"
+        android:layout_alignParentEnd="true"
+        android:layout_alignStart="@+id/editTextSumOrder"
+        android:background="@drawable/rounded_edit_text"
+        android:gravity="left"
+        android:imeOptions="actionDone"
+        android:inputType="text"
+        android:maxLength="4"
+        android:maxLines="1"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/textViewBarcodeId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textViewProductId"
+        android:layout_marginTop="15dp"
+        android:text="BARCODE-ID" />
 
 </android.widget.RelativeLayout>
