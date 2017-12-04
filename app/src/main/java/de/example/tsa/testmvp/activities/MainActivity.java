@@ -138,6 +138,12 @@ public class MainActivity extends AppCompatActivity implements MainPresenterCall
         openDialogDeleteItem(product);
     }
 
+    public void findItemLocation(View view){
+        Intent intent = new Intent(this, ItemLocationActivity.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+    }
+
     private void openDialogDeleteItem(Product product) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(cTxt);
         alertDialogBuilder.setTitle("App system dialog");
@@ -157,4 +163,5 @@ public class MainActivity extends AppCompatActivity implements MainPresenterCall
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
+
 }

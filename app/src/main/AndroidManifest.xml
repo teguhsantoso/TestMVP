@@ -16,11 +16,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.ProductDetailActivity"></activity>
+        <activity android:name=".activities.ProductDetailActivity" />
 
         <!-- Service background class used in this app. -->
-        <service android:name=".services.TelegramService" android:exported="false" />
+        <service
+            android:name=".services.TelegramService"
+            android:exported="false" />
 
+        <activity android:name=".activities.ItemLocationActivity"></activity>
     </application>
 
 </manifest>
