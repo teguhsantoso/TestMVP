@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">TestMVP</string>
     <string name="img_content_description">Image description</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

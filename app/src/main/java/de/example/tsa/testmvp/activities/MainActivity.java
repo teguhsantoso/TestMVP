@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import de.example.tsa.testmvp.MapsActivity;
 import de.example.tsa.testmvp.R;
 import de.example.tsa.testmvp.adapters.ProductsItemAdapter;
 import de.example.tsa.testmvp.entities.Product;
@@ -139,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenterCall
     }
 
     public void findItemLocation(View view){
-        Intent intent = new Intent(this, ItemLocationActivity.class);
+        Intent intent = new Intent(this, MapsActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
     }
