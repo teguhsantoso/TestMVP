@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -12,7 +13,12 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -23,14 +29,17 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import de.example.tsa.testmvp.services.Constants;
+
 import static de.example.tsa.testmvp.services.Constants.PERMISSION_REQUEST_ACCESS_LOCATION;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
-    private View            rootLayout;
-    private TextView        textViewCurrentPosition;
-    private GoogleMap       mMap;
-    private                 FusedLocationProviderClient mFusedLocationClient;
-    private                 Location mLastLocation;
+    private View                            rootLayout;
+    private TextView                        textViewCurrentPosition;
+    private GoogleMap                       mMap;
+    private FusedLocationProviderClient     mFusedLocationClient;
+    private Location                        mLastLocation;
+    private LocationRequest                 mLocationRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +65,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onResume() {
         super.onResume();
-
-        // Find last device position.
-        //getLastLocationAndUpdatePosition();
-
     }
 
     @Override
@@ -100,6 +105,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        // Set reference to Google map service.
         mMap = googleMap;
         googleMap.getUiSettings().setZoomControlsEnabled(true);
         googleMap.getUiSettings().setRotateGesturesEnabled(true);
@@ -108,12 +114,57 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Try finding last position of device.
         getLastLocationAndUpdatePosition();
-
     }
 
     private void getLastLocationAndUpdatePosition() {
+        // First, we find the last location of device.
         findLastDevicePosition();
-        //startLocationUpdates();
+
+        // We start obtaining the update of device position periodically.
+        startLocationUpdates();
+    }
+
+    private void updateItemPositionOnMap() {
+        LatLng itemPosition = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+        CameraUpdate cameraPosition = CameraUpdateFactory.newLatLngZoom(itemPosition, 16);
+        mMap.addMarker(new MarkerOptions().position(itemPosition).title("Item Position"));
+        mMap.moveCamera(cameraPosition);
+        mMap.animateCamera(cameraPosition);
+        textViewCurrentPosition.setText("Current item position: " + mLastLocation.getLatitude() + ", " + mLastLocation.getLongitude());
+    }
+
+    public void onLocationChanged(Location location) {
+        if (location == null) {
+            return;
+        }
+        mLastLocation = location;
+        updateItemPositionOnMap();
+    }
+
+    private void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Permission is missing and must be requested.
+            requestAccessLocationPermissions();
+            return;
+        }
+
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        mLocationRequest.setInterval(Constants.UPDATE_INTERVAL_MILLIS);
+        mLocationRequest.setFastestInterval(Constants.FASTEST_INTERVAL_MILLIS);
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        builder.addLocationRequest(mLocationRequest);
+        LocationSettingsRequest locationSettingsRequest = builder.build();
+
+        SettingsClient settingsClient = LocationServices.getSettingsClient(this);
+        settingsClient.checkLocationSettings(locationSettingsRequest);
+        mFusedLocationClient.requestLocationUpdates(mLocationRequest, new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                onLocationChanged(locationResult.getLastLocation());
+            }
+        }, Looper.myLooper());
     }
 
     private void requestAccessLocationPermissions() {
@@ -137,7 +188,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void findLastDevicePosition() {
-
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // Permission is missing and must be requested.
             requestAccessLocationPermissions();
@@ -152,18 +202,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     return;
                 }
 
-                // Retrieve the last device position.
+                // Retrieve the last device position and show the current position on map.
                 mLastLocation = task.getResult();
-                textViewCurrentPosition.setText("Last item position: " + mLastLocation.getLatitude() + ", " + mLastLocation.getLongitude());
-
-                // Refresh fragment map and put marker.
-                LatLng itemPosition = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-
-                CameraUpdate cameraPosition = CameraUpdateFactory.newLatLngZoom(itemPosition, 16);
-                mMap.addMarker(new MarkerOptions().position(itemPosition).title("Item Position"));
-                mMap.moveCamera(cameraPosition);
-                mMap.animateCamera(cameraPosition);
-
+                updateItemPositionOnMap();
             }
         });
     }
