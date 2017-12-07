@@ -5,20 +5,32 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import java.util.Date;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import de.example.tsa.testmvp.entities.Product;
+import rx.Single;
+import rx.SingleSubscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 public class TelegramService extends Service {
     private Context                     cTxt;
     private ScheduledExecutorService    scheduler;
+    private Subscription                mProductsSubscription;
+    private int                         mCounter;
 
     @Override
     public void onCreate() {
         super.onCreate();
         cTxt = this;
+        this.mCounter = 0;
         this.scheduler = Executors.newScheduledThreadPool(1);
     }
 
@@ -42,6 +54,7 @@ public class TelegramService extends Service {
     }
 
     private void startSchedulerReadDataSocket(){
+        Log.d(Constants.LOGGER, ">>> Start the scheduler.");
         scheduler.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
@@ -51,14 +64,46 @@ public class TelegramService extends Service {
     }
 
     private void generateTimestamp() {
-        String strTimestamp = AppUtility.getInstance().getCurrentTime(new Date().getTime());
-        Intent intent = new Intent(Constants.INTENT_ACTION_READ);
-        intent.putExtra(Constants.INTENT_EXTRA_RESPONSE, strTimestamp);
-        LocalBroadcastManager.getInstance(cTxt).sendBroadcast(intent);
+        // Invoke the webservice method.
+        getProductDataFromWS();
     }
 
     private void stopScheduler(){
+        Log.d(Constants.LOGGER, ">>> Shut down the scheduler.");
         scheduler.shutdownNow();
     }
+
+    private void getProductDataFromWS() {
+        Single<Product> initProductsSingle = Single.fromCallable(new Callable<Product>() {
+
+            @Override
+            public Product call() throws Exception {
+                mCounter++;
+                return new Product("2017" + String.valueOf(mCounter), "Mouse LOGITEC", 5, "Standard USB mouse");
+            }
+        });
+
+        mProductsSubscription = initProductsSingle
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleSubscriber<Product>() {
+                    @Override
+                    public void onSuccess(Product value) {
+
+                        // Send data timestamp to parent activity.
+                        String strTimestamp = AppUtility.getInstance().getCurrentTime(new Date().getTime()) + " - " + value.getBarcodeId();
+                        Intent intent = new Intent(Constants.INTENT_ACTION_READ);
+                        intent.putExtra(Constants.INTENT_EXTRA_RESPONSE, strTimestamp);
+                        LocalBroadcastManager.getInstance(cTxt).sendBroadcast(intent);
+
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+                        // DO nothing.
+                    }
+                });
+    }
+
 
 }
