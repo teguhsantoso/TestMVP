@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -125,6 +126,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void updateItemPositionOnMap() {
+        // Clear all marker from map.
+        mMap.clear();
+
         LatLng itemPosition = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
         CameraUpdate cameraPosition = CameraUpdateFactory.newLatLngZoom(itemPosition, 16);
         mMap.addMarker(new MarkerOptions().position(itemPosition).title("Item Position"));
