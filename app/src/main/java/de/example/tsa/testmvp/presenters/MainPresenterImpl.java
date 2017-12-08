@@ -60,6 +60,10 @@ public class MainPresenterImpl implements MainPresenter, RoomInteractor.OnRoomIn
     @Override
     public void onResponse(List products) {
         this.presenterCallback.hideProgressBar();
+        if(products == null){
+            this.presenterCallback.showMessage("Time out exception.");
+            return;
+        }
         this.presenterCallback.showMessage("Found products size #" + products.size());
         this.presenterCallback.fillDataProducts(products);
     }

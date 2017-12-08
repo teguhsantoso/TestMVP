@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import de.example.tsa.testmvp.entities.Product;
 import de.example.tsa.testmvp.services.Constants;
@@ -109,17 +110,20 @@ public class RoomDatabaseImpl implements RoomInteractor {
         });
 
         mProductsSubscription = initProductsSingle
+                .timeout(5000, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleSubscriber<List<Product>>() {
                     @Override
                     public void onSuccess(List<Product> value) {
+                        Log.d(Constants.LOGGER, ">>> onSuccess get value: " + value.size());
                         roomInteractionListener.onResponse(value);
                     }
 
                     @Override
                     public void onError(Throwable error) {
-                        // Do nothing.
+                        Log.d(Constants.LOGGER, ">>> onError: " + error.getLocalizedMessage());
+                        roomInteractionListener.onResponse(null);
                     }
                 });
     }
@@ -151,6 +155,12 @@ public class RoomDatabaseImpl implements RoomInteractor {
     }
 
     private List<Product> findAllByName(String name) {
+        //Log.d(Constants.LOGGER, ">>> Introduce delay 6000ms.");
+        //try {
+        //    Thread.sleep(6000);
+        //} catch (InterruptedException e) {
+        //    e.printStackTrace();
+        //}
         if(name.trim().isEmpty()){
             return appDatabase.productDao().getAll();
         }
